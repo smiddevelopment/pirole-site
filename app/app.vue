@@ -4,7 +4,7 @@
     <header class="header">
       <div class="container header-inner">
         <a href="#hero" class="logo">
-          <img src="/images/logo.svg" alt="Pirole" />
+          <img src="/images/logo-horizontal.svg" alt="Pirole" />
         </a>
         <nav class="nav">
           <a href="#about" class="nav-link">О нас</a>
@@ -29,7 +29,7 @@
     <section id="hero" class="hero">
       <div class="hero-overlay"></div>
       <div class="container hero-content">
-        <h1 class="hero-title">PIROLE</h1>
+        <img src="/images/logo.svg" alt="Pirole" class="hero-logo" />
         <p class="hero-subtitle">Кастомная мебель для баров и ресторанов</p>
         <p class="hero-description">Создаём уникальную мебель в индустриальном стиле из металла и дерева</p>
         <a href="#contacts" class="btn">Связаться с нами</a>
@@ -67,26 +67,33 @@
     <!-- Gallery Section -->
     <section id="gallery" class="gallery">
       <div class="container">
-        <h2 class="section-title">Наши работы</h2>
-        <div class="gallery-grid">
-          <div
-            class="gallery-item"
-            v-for="(image, index) in galleryImages"
-            :key="index"
-            @click="openLightbox(index)"
-          >
-            <img :src="image.src" :alt="image.alt" loading="lazy" />
-            <div class="gallery-item-overlay">
-              <span class="gallery-zoom-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.35-4.35"></path>
-                  <path d="M11 8v6"></path>
-                  <path d="M8 11h6"></path>
-                </svg>
-              </span>
+        <h2 class="section-title">Наши проекты</h2>
+        <div class="gallery-carousel">
+          <button class="carousel-btn carousel-prev" @click="prevSlide" aria-label="Предыдущий">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </button>
+          <div class="carousel-track">
+            <div
+              class="carousel-slide"
+              v-for="(image, index) in galleryImages"
+              :key="index"
+              :class="{
+                'active': index === activeSlide,
+                'prev': index === getPrevIndex(activeSlide),
+                'next': index === getNextIndex(activeSlide)
+              }"
+              @click="index === activeSlide ? openLightbox(index) : goToSlide(index)"
+            >
+              <img :src="image.src" :alt="image.alt" loading="lazy" />
             </div>
           </div>
+          <button class="carousel-btn carousel-next" @click="nextSlide" aria-label="Следующий">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </button>
         </div>
       </div>
     </section>
@@ -164,6 +171,7 @@ const lightboxOpen = ref(false)
 const currentImage = ref(0)
 const touchStartX = ref(0)
 const touchEndX = ref(0)
+const activeSlide = ref(0)
 
 const galleryImages = [
   { src: '/images/1.png', alt: 'Обеденная группа - стол и стулья' },
@@ -190,6 +198,27 @@ const nextImage = () => {
 
 const prevImage = () => {
   currentImage.value = (currentImage.value - 1 + galleryImages.length) % galleryImages.length
+}
+
+// Carousel navigation
+const nextSlide = () => {
+  activeSlide.value = (activeSlide.value + 1) % galleryImages.length
+}
+
+const prevSlide = () => {
+  activeSlide.value = (activeSlide.value - 1 + galleryImages.length) % galleryImages.length
+}
+
+const goToSlide = (index) => {
+  activeSlide.value = index
+}
+
+const getPrevIndex = (current) => {
+  return (current - 1 + galleryImages.length) % galleryImages.length
+}
+
+const getNextIndex = (current) => {
+  return (current + 1) % galleryImages.length
 }
 
 // Keyboard navigation
@@ -300,7 +329,7 @@ body {
 }
 
 .logo img {
-  height: 60px;
+  height: 50px;
   width: auto;
   filter: invert(1);
   display: block;
@@ -455,6 +484,13 @@ body {
   padding: 0 10px;
 }
 
+.hero-logo {
+  height: clamp(120px, 25vw, 200px);
+  width: auto;
+  margin-bottom: 20px;
+  filter: invert(1);
+}
+
 .btn {
   display: inline-block;
   font-family: var(--font-heading);
@@ -534,54 +570,108 @@ body {
 .gallery {
   padding: 100px 0;
   background: var(--color-bg);
-}
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.gallery-item {
-  position: relative;
   overflow: hidden;
-  aspect-ratio: 4/3;
-  cursor: pointer;
 }
 
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.gallery-item:hover img {
-  transform: scale(1.1);
-}
-
-.gallery-item-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+.gallery-carousel {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 20px;
+}
+
+.carousel-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 400px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 280px;
+  aspect-ratio: 4/3;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: scale(0.7);
+  filter: blur(3px);
+  z-index: 1;
 }
 
-.gallery-item:hover .gallery-item-overlay {
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-slide.prev {
   opacity: 1;
+  transform: translateX(-320px) scale(0.85);
+  filter: blur(3px);
+  z-index: 2;
 }
 
-.gallery-zoom-icon svg {
-  width: 40px;
-  height: 40px;
-  color: var(--color-primary);
+.carousel-slide.next {
+  opacity: 1;
+  transform: translateX(320px) scale(0.85);
+  filter: blur(3px);
+  z-index: 2;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  filter: blur(0);
+  z-index: 3;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-slide.active:hover {
+  transform: scale(1.02);
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--color-bg-light);
+  border: 2px solid var(--color-border);
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.carousel-btn:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.carousel-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.carousel-prev {
+  left: 0;
+}
+
+.carousel-next {
+  right: 0;
 }
 
 /* Lightbox */
@@ -771,8 +861,16 @@ body {
 
 /* Responsive - Tablets */
 @media (max-width: 1024px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .carousel-slide {
+    width: 240px;
+  }
+
+  .carousel-slide.prev {
+    transform: translateX(-280px) scale(0.85);
+  }
+
+  .carousel-slide.next {
+    transform: translateX(280px) scale(0.85);
   }
 
   .about-content {
@@ -833,9 +931,30 @@ body {
     padding: 60px 0;
   }
 
-  .gallery-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+  .carousel-track {
+    height: 300px;
+  }
+
+  .carousel-slide {
+    width: 200px;
+  }
+
+  .carousel-slide.prev {
+    transform: translateX(-180px) scale(0.8);
+  }
+
+  .carousel-slide.next {
+    transform: translateX(180px) scale(0.8);
+  }
+
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel-btn svg {
+    width: 20px;
+    height: 20px;
   }
 
   .contact-value {
