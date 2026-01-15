@@ -433,7 +433,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('/images/1.png') center center / cover no-repeat;
+  background: url('/images/3.png') center center / cover no-repeat;
 }
 
 .hero-overlay {
@@ -568,9 +568,13 @@ body {
 
 /* Gallery */
 .gallery {
-  padding: 100px 0;
+  padding: 100px 0 60px;
   background: var(--color-bg);
   overflow: hidden;
+}
+
+.gallery .section-title {
+  margin-bottom: 30px;
 }
 
 .gallery-carousel {
@@ -586,14 +590,14 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 400px;
+  height: 420px;
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
 }
 
 .carousel-slide {
   position: absolute;
-  width: 280px;
+  width: 520px;
   aspect-ratio: 4/3;
   border-radius: 8px;
   overflow: hidden;
@@ -613,14 +617,14 @@ body {
 
 .carousel-slide.prev {
   opacity: 1;
-  transform: translateX(-320px) scale(0.85);
+  transform: translateX(-540px) scale(0.85);
   filter: blur(3px);
   z-index: 2;
 }
 
 .carousel-slide.next {
   opacity: 1;
-  transform: translateX(320px) scale(0.85);
+  transform: translateX(540px) scale(0.85);
   filter: blur(3px);
   z-index: 2;
 }
@@ -861,16 +865,24 @@ body {
 
 /* Responsive - Tablets */
 @media (max-width: 1024px) {
+  .gallery {
+    padding: 80px 0 50px;
+  }
+
+  .carousel-track {
+    height: 340px;
+  }
+
   .carousel-slide {
-    width: 240px;
+    width: 400px;
   }
 
   .carousel-slide.prev {
-    transform: translateX(-280px) scale(0.85);
+    transform: translateX(-420px) scale(0.85);
   }
 
   .carousel-slide.next {
-    transform: translateX(280px) scale(0.85);
+    transform: translateX(420px) scale(0.85);
   }
 
   .about-content {
@@ -926,25 +938,28 @@ body {
   }
 
   .about,
-  .gallery,
   .contacts {
     padding: 60px 0;
   }
 
+  .gallery {
+    padding: 60px 0 40px;
+  }
+
   .carousel-track {
-    height: 300px;
+    height: 260px;
   }
 
   .carousel-slide {
-    width: 200px;
+    width: 300px;
   }
 
   .carousel-slide.prev {
-    transform: translateX(-180px) scale(0.8);
+    transform: translateX(-260px) scale(0.8);
   }
 
   .carousel-slide.next {
-    transform: translateX(180px) scale(0.8);
+    transform: translateX(260px) scale(0.8);
   }
 
   .carousel-btn {
