@@ -1,0 +1,41 @@
+server {
+    listen 80;
+    server_name pirole.ru www.pirole.ru;
+
+    # Редирект на HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name pirole.ru www.pirole.ru;
+
+    # SSL сертификаты (Let's Encrypt)
+    ssl_certificate /etc/letsencrypt/live/pirole.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/pirole.ru/privkey.pem;
+
+    # Путь к статике
+    root /var/www/pirole;
+    index index.html;
+
+    # Gzip сжатие
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+    gzip_min_length 1000;
+
+    # Кеширование статики
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # SPA fallback
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Безопасность
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+}

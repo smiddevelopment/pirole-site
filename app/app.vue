@@ -58,7 +58,7 @@
             </p>
           </div>
           <div class="about-image">
-            <img src="/images/3.png" alt="Мастерская Pirole" />
+            <img src="/images/2.png" alt="Мастерская Pirole" />
           </div>
         </div>
       </div>
